@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+#coding=utf-8
+
+from __future__ import print_function
+import subprocess
+from os import devnull, path, remove
+from datetime import datetime
+
+FNULL = open(devnull, "wb")
+USERS = []
+
+tmp_path = path.join("/tmp/tmp-82802960.txt")
+last_run_path = path.join("/home/login/tildebook/last_run.txt")
+
+def erase_tmp_file():
+  global tmp_path
+  with open(tmp_path, "w") as e:
+    e.write("")
+
+erase_tmp_file()
+with open(tmp_path, 'r+') as f:
+  sp = subprocess.Popen(["ls", "/home"], bufsize=-1, stdout=f, stderr=FNULL, universal_newlines=True)
+  sp.wait()
+  f.seek(0)
+  USERS = f.read().split()
+
+profile_path = "/home/{}/public_html/tildebook_profile.html"
+profile_url = "https://tilde.town/~{}/tildebook_profile.html"
+profile_path2 = "/home/{}/public_html/tildebook_page.html"
+profile_url2 = "https://tilde.town/~{}/tildebook_page.html"
+def user_profile_url(username):
+  global profile_path
+  global profile_path2
+  global profile_url
+  global profile_url2
+  try:
+    with open(profile_path.format(username)) as a:
+      return profile_url.format(username)
+  except EnvironmentError:
+    try:
+      with open(profile_path2.format(username)) as b:
+        return profile_url2.format(username)
+    except EnvironmentError:
+      pass
+  return None
+
+index_template_path = "/home/login/tildebook/index_template.txt"
+index_html_path = "/home/login/tildebook/index.html"
+user_profile_path = None;
+try:
+  with open(index_template_path) as i:
+    with open(index_html_path, "w") as j:
+      for line in i:
+        if line.strip()=="<!-- TILDEBOOK INDICATOR -->":
+          j.write("      ")
+          for user in USERS:
+            my_profile_url = user_profile_url(user)
+            if my_profile_url != None:
+              j.write("<iframe frameborder=\"0\" src=\"{}\" width=\"144px\" height=\"144px\"></iframe>".format(my_profile_url))
+          j.write("    ")
+        else:
+          j.write(line)
+except EnvironmentError:
+  print("No template file :(")
+  remove(tmp_path)
+  exit(1)
+
+print("Done :)") # done generating index.html file
+print("Generating last_run.txt log file...")
+try:
+  with open(last_run_path, "w") as z:
+    z.write("Last run at " + str(datetime.now()) + "\n")
+    print("Done :)")
+except EnvironmentError:
+  print("Couldn't open last_run.txt log file :(")
+
+remove(tmp_path)
+

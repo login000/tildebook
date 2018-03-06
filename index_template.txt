@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>tildebook</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>tildebook</h1>
+      <h3>all the townies on <a href="https://tilde.town">tilde.town</a></h3>
+    </header>
+    <main>
+      <!-- TILDEBOOK INDICATOR -->
+    </main>
+    <footer>
+      <p>https://tildebook.tk redirection provided by <a href="https://301redirect.website">301Redirect</a>.
+      </p>
+    </footer>
+  </body>
+</html>
